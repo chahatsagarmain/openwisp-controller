@@ -18,6 +18,7 @@ Device = load_model('config', 'Device')
 @pytest.mark.django_db(transaction=True)
 class TestDeviceConsumer(CreateDeviceMixin):
     model = Device
+    UUID_PATTERN = '[a-fA-F0-9]{8}-?[a-fA-F0-9]{4}-?[a-fA-F0-9]{4}-?[a-fA-F0-9]{4}-?[a-fA-F0-9]{12}'
     application = ProtocolTypeRouter(
         {
             'websocket': AllowedHostsOriginValidator(
@@ -25,7 +26,7 @@ class TestDeviceConsumer(CreateDeviceMixin):
                     URLRouter(
                         [
                             re_path(
-                                r'^ws/controller/device/(?P<pk>[^/]+)/$',
+                                f'^ws/controller/device/(?P<pk>{UUID_PATTERN})/$',
                                 BaseDeviceConsumer.as_asgi(),
                             )
                         ]
